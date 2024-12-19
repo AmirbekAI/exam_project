@@ -3,18 +3,21 @@ import axios from 'axios';
 const BASE_URL = 'https://dev.to/api';
 
 const api = {
-  // Get random articles
+  // Get articles (modified to use the correct endpoint)
   getRandomArticles: async (page = 1, per_page = 10) => {
     try {
-      const response = await axios.get(`${BASE_URL}/articles/random`, {
+      const response = await axios.get(`${BASE_URL}/articles`, {
         params: {
           page,
-          per_page
+          per_page,
+          // Adding some parameters to get varied content
+          state: 'rising',
+          sort: 'published_at'
         }
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching random articles:', error);
+      console.error('Error fetching articles:', error);
       throw error;
     }
   },
