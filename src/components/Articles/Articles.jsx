@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import './Articles.css';
-import { Link } from 'react-router-dom';
 
 const Articles = () => {
   const [articles, setArticles] = useState([]);
@@ -42,11 +42,9 @@ const Articles = () => {
         });
       }
       
-      // Ensure data is always an array
       setArticles(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error('Failed to fetch articles:', err);
-      setError('Failed to fetch articles. Please try again later.');
+      setError('Failed to fetch articles');
     } finally {
       setLoading(false);
     }
@@ -57,34 +55,21 @@ const Articles = () => {
     article.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) {
-    return (
-      <div className="articles-container">
-        <div className="content-loader">
-          <div className="loader"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="articles-container">
-        <div className="content-error">{error}</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="articles-container">
-      <div className="filters-container">
-        <input
-          type="text"
-          placeholder="Search articles..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
+      <div className="filters-section">
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search articles..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
         <div className="filter-options">
           <select
             value={timeFilter}
@@ -109,17 +94,18 @@ const Articles = () => {
           </select>
         </div>
       </div>
-      
+
       {filteredArticles.length === 0 ? (
         <div className="no-results">No articles found matching your search.</div>
       ) : (
         <div className="articles-grid">
           {filteredArticles.map((article) => (
-            <article className="article-card" key={article.id}>
-              <Link 
-                to={`/article/${article.id}`}
-                className="article-link"
-              >
+            <Link 
+              to={`/article/${article.id}`}
+              className="article-link"
+              key={article.id}
+            >
+              <article className="article-card">
                 {article.cover_image && (
                   <img 
                     src={article.cover_image} 
@@ -136,8 +122,8 @@ const Articles = () => {
                     <span>• {article.reading_time_minutes || '?'} min read</span>
                   </div>
                 </div>
-              </Link>
-            </article>
+              </article>
+            </Link>
           ))}
         </div>
       )}
@@ -145,4 +131,4 @@ const Articles = () => {
   );
 };
 
-export default Articles; 
+export default Articles;
