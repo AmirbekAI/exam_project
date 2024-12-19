@@ -106,13 +106,23 @@ const Articles = () => {
               key={article.id}
             >
               <article className="article-card">
-                {article.cover_image && (
-                  <img 
-                    src={article.cover_image} 
-                    alt={article.title} 
-                    className="article-image"
-                  />
-                )}
+                <div className="article-image-container">
+                  {article.cover_image ? (
+                    <img 
+                      src={article.cover_image} 
+                      alt={article.title} 
+                      className="article-image"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : (
+                    <div className="article-image-placeholder">
+                      <span>No image available</span>
+                    </div>
+                  )}
+                </div>
                 <div className="article-content">
                   <h2>{article.title}</h2>
                   <p>{article.description || 'No description available'}</p>
